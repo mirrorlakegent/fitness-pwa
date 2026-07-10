@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#1a1a2e">
+    <title>12周健身计划</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
+    <link rel="apple-touch-icon" href="icon-192.png">
+</head>
+<body>
+    <div id="app">
+        <!-- 顶部导航 -->
+        <header class="header">
+            <h1 class="logo">💪 健身计划</h1>
+            <div class="header-info">
+                <span id="current-week">第1周</span>
+                <span id="current-date"></span>
+            </div>
+        </header>
+
+        <!-- 主内容区 -->
+        <main class="main-content">
+            <!-- 今日训练卡片 -->
+            <section id="today-workout" class="workout-card today-card">
+                <div class="card-header">
+                    <h2 id="today-title">今日训练</h2>
+                    <span id="today-badge" class="badge">上肢推</span>
+                </div>
+                <div class="workout-summary">
+                    <div class="summary-item">
+                        <span class="summary-icon">🎯</span>
+                        <span id="today-focus">胸/肩/三头</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-icon">⏱️</span>
+                        <span id="today-duration">约60分钟</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-icon">🔥</span>
+                        <span id="today-exercises">5个动作</span>
+                    </div>
+                </div>
+                <button id="start-workout-btn" class="btn-primary">开始训练</button>
+            </section>
+
+            <!-- 本周计划概览 -->
+            <section class="week-overview">
+                <h3>本周计划</h3>
+                <div class="week-days" id="week-days">
+                    <!-- 由JS动态生成 -->
+                </div>
+            </section>
+
+            <!-- 进度统计 -->
+            <section class="progress-section">
+                <h3>训练进度</h3>
+                <div class="progress-stats">
+                    <div class="stat-item">
+                        <span class="stat-value" id="total-workouts">0</span>
+                        <span class="stat-label">已完成训练</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="current-streak">0</span>
+                        <span class="stat-label">连续天数</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="completion-rate">0%</span>
+                        <span class="stat-label">完成率</span>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                </div>
+                <p class="progress-text">12周计划已完成 <span id="progress-percent">0</span>%</p>
+            </section>
+
+            <!-- 快捷操作 -->
+            <section class="quick-actions">
+                <h3>快捷功能</h3>
+                <div class="action-grid">
+                    <button class="action-btn" onclick="showExerciseLibrary()">
+                        <span class="action-icon">📚</span>
+                        <span>动作库</span>
+                    </button>
+                    <button class="action-btn" onclick="showTimer()">
+                        <span class="action-icon">⏱️</span>
+                        <span>计时器</span>
+                    </button>
+                    <button class="action-btn" onclick="showLog()">
+                        <span class="action-icon">📝</span>
+                        <span>训练日志</span>
+                    </button>
+                    <button class="action-btn" onclick="showSettings()">
+                        <span class="action-icon">⚙️</span>
+                        <span>设置</span>
+                    </button>
+                </div>
+            </section>
+        </main>
+
+        <!-- 底部导航 -->
+        <nav class="bottom-nav">
+            <button class="nav-btn active" onclick="showHome()">
+                <span class="nav-icon">🏠</span>
+                <span>首页</span>
+            </button>
+            <button class="nav-btn" onclick="showPlan()">
+                <span class="nav-icon">📋</span>
+                <span>计划</span>
+            </button>
+            <button class="nav-btn" onclick="showProgress()">
+                <span class="nav-icon">📊</span>
+                <span>进度</span>
+            </button>
+            <button class="nav-btn" onclick="showProfile()">
+                <span class="nav-icon">👤</span>
+                <span>我的</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- 训练模式弹窗 -->
+    <div id="workout-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">训练中</h2>
+                <button class="close-btn" onclick="closeWorkoutModal()">✕</button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <!-- 动态内容 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 计时器弹窗 -->
+    <div id="timer-modal" class="modal hidden">
+        <div class="modal-content timer-content">
+            <div class="timer-display">
+                <span id="timer-time">00:00</span>
+            </div>
+            <div class="timer-controls">
+                <button class="timer-btn" onclick="startTimer()">开始</button>
+                <button class="timer-btn" onclick="pauseTimer()">暂停</button>
+                <button class="timer-btn" onclick="resetTimer()">重置</button>
+            </div>
+            <div class="timer-presets">
+                <button onclick="setTimer(30)">30秒</button>
+                <button onclick="setTimer(45)">45秒</button>
+                <button onclick="setTimer(60)">60秒</button>
+                <button onclick="setTimer(90)">90秒</button>
+            </div>
+            <button class="close-btn" onclick="closeTimerModal()">关闭</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
